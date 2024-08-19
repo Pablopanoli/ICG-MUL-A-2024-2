@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujar Figuras Geométricas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dibujar Figuras Geométricas</h1>
+    <div class="controls">
+        <label for="shape">Figura:</label>
+        <select id="shape">
+            <option value="circle">Círculo</option>
+            <option value="triangle">Triángulo</option>
+        </select>
+        
+        <label for="size">Tamaño:</label>
+        <input type="number" id="size" value="50" min="10" max="200">
+        
+        <label for="position-x">Posición X:</label>
+        <input type="number" id="position-x" value="100" min="0" max="800">
+        
+        <label for="position-y">Posición Y:</label>
+        <input type="number" id="position-y" value="100" min="0" max="600">
+        
+        <label for="color">Color:</label>
+        <input type="color" id="color" value="#ff0000">
+        
+        <button id="draw">Dibujar</button>
+    </div>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+        document.getElementById('draw').addEventListener('click', function() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const shape = document.getElementById('shape').value;
+            const size = parseInt(document.getElementById('size').value);
+            const positionX = parseInt(document.getElementById('position-x').value);
+            const positionY = parseInt(document.getElementById('position-y').value);
+            const color = document.getElementById('color').value;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+
+            if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(positionX, positionY, size / 2, 0, 2 * Math.PI);
+                ctx.fill();
+            } else if (shape === 'triangle') {
+                ctx.beginPath();
+                ctx.moveTo(positionX, positionY - size / 2);
+                ctx.lineTo(positionX - size / 2, positionY + size / 2);
+                ctx.lineTo(positionX + size / 2, positionY + size / 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        });
+    </script>
+</body>
+</html>
