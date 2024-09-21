@@ -1,65 +1,97 @@
- <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dibujo SVG Dinámico</title>
-</head>
-<body>
-    <svg id="svgCanvas" width="600" height="400" style="border:1px solid #000;"></svg>
+class SVGManager {
+    constructor(svgElement) {
+        this.svgElement = svgElement;
+    }
 
-    <script>
-        // Función para crear un elemento SVG
-        function crearElemento(tag, attributes) {
-            const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
-            for (const [key, value] of Object.entries(attributes)) {
-                element.setAttribute(key, value);
-            }
-            return element;
+    crearElemento(tag, attributes) {
+        const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+        for (const [key, value] of Object.entries(attributes)) {
+            element.setAttribute(key, value);
         }
+        return element;
+    }
 
-        // Función para dibujar formas
-        function dibujarForma(tipo, params) {
-            let forma;
-            if (tipo === 'line') {
-                forma = crearElemento('line', {
-                    x1: params.x1,
-                    y1: params.y1,
-                    x2: params.x2,
-                    y2: params.y2,
-                    stroke: 'black',
-                    'stroke-width': 2
-                });
-            } else if (tipo === 'circle') {
-                forma = crearElemento('circle', {
-                    cx: params.cx,
-                    cy: params.cy,
-                    r: params.r,
-                    stroke: 'blue',
-                    'stroke-width': 2,
-                    fill: 'none'
-                });
-            } else if (tipo === 'ellipse') {
-                forma = crearElemento('ellipse', {
-                    cx: params.cx,
-                    cy: params.cy,
-                    rx: params.rx,
-                    ry: params.ry,
-                    stroke: 'red',
-                    'stroke-width': 2,
-                    fill: 'none'
-                });
-            }
-            return forma;
-        }
+    agregarElemento(element) {
+        this.svgElement.appendChild(element);
+    }
+}
 
-        // Crear el SVG
-        const svgCanvas = document.getElementById('svgCanvas');
+class Line {
+    constructor(manager, x1, y1, x2, y2) {
+        this.manager = manager;
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
 
-        // Dibujar las primitivas
-        svgCanvas.appendChild(dibujarForma('line', { x1: 50, y1: 50, x2: 200, y2: 200 }));
-        svgCanvas.appendChild(dibujarForma('circle', { cx: 300, cy: 100, r: 50 }));
-        svgCanvas.appendChild(dibujarForma('ellipse', { cx: 400, cy: 300, rx: 80, ry: 50 }));
-    </script>
-</body>
-</html>
+    dibujar() {
+        const linea = this.manager.crearElemento('line', {
+            x1: this.x1,
+            y1: this.y1,
+            x2: this.x2,
+            y2: this.y2,
+            stroke: 'black',
+            'stroke-width': 1
+        });
+        this.manager.agregarElemento(linea);
+    }
+}
+
+class Circle {
+    constructor(manager, cx, cy, r) {
+        this.manager = manager;
+        this.cx = cx;
+        this.cy = cy;
+        this.r = r;
+    }
+
+    dibujar() {
+        const circunferencia = this.manager.crearElemento('circle', {
+            cx: this.cx,
+            cy: this.cy,
+            r: this.r,
+            stroke: 'black',
+            'stroke-width': 1,
+            fill: 'none'
+        });
+        this.manager.agregarElemento(circunferencia);
+    }
+}
+
+class Ellipse {
+    constructor(manager, cx, cy, rx, ry) {
+        this.manager = manager;
+        this.cx = cx;
+        this.cy = cy;
+        this.rx = rx;
+        this.ry = ry;
+    }
+
+    dibujar() {
+        const elipse = this.manager.crearElemento('ellipse', {
+            cx: this.cx,
+            cy: this.cy,
+            rx: this.rx,
+            ry: this.ry,
+            stroke: 'black',
+            'stroke-width': 1,
+            fill: 'none'
+        });
+        this.manager.agregarElemento(elipse);
+    }
+}
+
+// Crear el SVG y la instancia de SVGManager
+const svgCanvas = document.getElementById('svgCanvas');
+const svgManager = new SVGManager(svgCanvas);
+
+// Dibujar las primitivas
+const linea = new Line(svgManager, 50, 50, 200, 200);
+linea.dibujar();
+
+const circunferencia = new Circle(svgManager, 300, 100, 50);
+circunferencia.dibujar();
+
+const elipse = new Ellipse(svgManager, 400, 300, 80, 50);
+elipse.dibujar();
