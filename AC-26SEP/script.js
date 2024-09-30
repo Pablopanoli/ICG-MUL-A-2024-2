@@ -1,3 +1,4 @@
+//vercion final 2
 class SVGManager {
     constructor(svgElement) {
         this.svgElement = svgElement;
@@ -17,25 +18,37 @@ class SVGManager {
 }
 
 class Punto {
+    #x; 
+    #y;
+
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.#x = x;
+        this.#y = y;
+    }
+
+    get x() {
+        return this.#x;
+    }
+
+    get y() {
+        return this.#y;
     }
 }
 
 class Line {
+    #punto1; 
+    #punto2;
+
     constructor(manager, punto1, punto2) {
         this.manager = manager;
-        this.x1 = punto1.x;
-        this.y1 = punto1.y;
-        this.x2 = punto2.x;
-        this.y2 = punto2.y;
+        this.#punto1 = punto1; // Objeto Punto
+        this.#punto2 = punto2; // Objeto Punto
     }
 
     bresenham() {
         const points = [];
-        let x1 = this.x1, y1 = this.y1;
-        const x2 = this.x2, y2 = this.y2;
+        let x1 = this.#punto1.x, y1 = this.#punto1.y;
+        const x2 = this.#punto2.x, y2 = this.#punto2.y;
 
         const dx = Math.abs(x2 - x1);
         const dy = Math.abs(y2 - y1);
@@ -74,28 +87,30 @@ class Line {
 }
 
 class Circle {
+    #centro; 
+    #r;
+
     constructor(manager, centro, r) {
         this.manager = manager;
-        this.cx = centro.x;
-        this.cy = centro.y;
-        this.r = r;
+        this.#centro = centro; // Objeto Punto
+        this.#r = r;
     }
 
     bresenham() {
         const points = [];
-        let x = this.r;
+        let x = this.#r;
         let y = 0;
-        let p = 1 - this.r;
+        let p = 1 - this.#r;
 
         while (x > y) {
-            points.push({ x: this.cx + x, y: this.cy + y });
-            points.push({ x: this.cx - x, y: this.cy + y });
-            points.push({ x: this.cx + x, y: this.cy - y });
-            points.push({ x: this.cx - x, y: this.cy - y });
-            points.push({ x: this.cx + y, y: this.cy + x });
-            points.push({ x: this.cx - y, y: this.cy + x });
-            points.push({ x: this.cx + y, y: this.cy - x });
-            points.push({ x: this.cx - y, y: this.cy - x });
+            points.push({ x: this.#centro.x + x, y: this.#centro.y + y });
+            points.push({ x: this.#centro.x - x, y: this.#centro.y + y });
+            points.push({ x: this.#centro.x + x, y: this.#centro.y - y });
+            points.push({ x: this.#centro.x - x, y: this.#centro.y - y });
+            points.push({ x: this.#centro.x + y, y: this.#centro.y + x });
+            points.push({ x: this.#centro.x - y, y: this.#centro.y + x });
+            points.push({ x: this.#centro.x + y, y: this.#centro.y - x });
+            points.push({ x: this.#centro.x - y, y: this.#centro.y - x });
             y++;
 
             if (p <= 0) {
@@ -123,29 +138,32 @@ class Circle {
 }
 
 class Ellipse {
+    #centro; 
+    #rx; 
+    #ry;
+
     constructor(manager, centro, rx, ry) {
         this.manager = manager;
-        this.cx = centro.x;
-        this.cy = centro.y;
-        this.rx = rx;
-        this.ry = ry;
+        this.#centro = centro; // Objeto Punto
+        this.#rx = rx;
+        this.#ry = ry;
     }
 
     bresenham() {
         const points = [];
         let x = 0;
-        let y = this.ry;
-        let rx2 = this.rx * this.rx;
-        let ry2 = this.ry * this.ry;
+        let y = this.#ry;
+        let rx2 = this.#rx * this.#rx;
+        let ry2 = this.#ry * this.#ry;
         let p;
 
         // Región 1
-        p = Math.round(ry2 - (rx2 * this.ry) + (0.25 * rx2));
+        p = Math.round(ry2 - (rx2 * this.#ry) + (0.25 * rx2));
         while ((2 * ry2 * x) < (2 * rx2 * y)) {
-            points.push({ x: this.cx + x, y: this.cy + y });
-            points.push({ x: this.cx - x, y: this.cy + y });
-            points.push({ x: this.cx + x, y: this.cy - y });
-            points.push({ x: this.cx - x, y: this.cy - y });
+            points.push({ x: this.#centro.x + x, y: this.#centro.y + y });
+            points.push({ x: this.#centro.x - x, y: this.#centro.y + y });
+            points.push({ x: this.#centro.x + x, y: this.#centro.y - y });
+            points.push({ x: this.#centro.x - x, y: this.#centro.y - y });
             x++;
 
             if (p < 0) {
@@ -159,10 +177,10 @@ class Ellipse {
         // Región 2
         p = Math.round(ry2 * (x + 0.5) * (x + 0.5) + rx2 * (y - 1) * (y - 1) - rx2 * ry2);
         while (y > 0) {
-            points.push({ x: this.cx + x, y: this.cy + y });
-            points.push({ x: this.cx - x, y: this.cy + y });
-            points.push({ x: this.cx + x, y: this.cy - y });
-            points.push({ x: this.cx - x, y: this.cy - y });
+            points.push({ x: this.#centro.x + x, y: this.#centro.y + y });
+            points.push({ x: this.#centro.x - x, y: this.#centro.y + y });
+            points.push({ x: this.#centro.x + x, y: this.#centro.y - y });
+            points.push({ x: this.#centro.x - x, y: this.#centro.y - y });
             y--;
 
             if (p > 0) {
@@ -208,4 +226,3 @@ circunferencia.dibujar();
 
 const elipse = new Ellipse(svgManager, centroElipse, 80, 50);
 elipse.dibujar();
-
