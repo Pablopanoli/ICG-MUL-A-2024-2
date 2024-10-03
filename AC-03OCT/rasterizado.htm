@@ -2,19 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dibujo de Polígonos</title>
+    <script src="rasterizado.js" defer></script>
     <style>
         canvas {
-            border: 1px solid black;
+            border: 1px solid black; /* Estilo del canvas */
         }
     </style>
 </head>
 <body>
     <canvas id="canvas" width="500" height="500"></canvas>
+    <div id="tipoPoligono">La figura es: </div>
     <button onclick="toggleCentroide()">Mostrar/Ocultar Centroide</button>
-    <p id="tipoPoligono"></p>
-
-    <script src="rasterizado.js"></script>
+    <button onclick="generarPoligonoAleatorio()">Generar Polígono Aleatorio</button>
 </body>
 </html>

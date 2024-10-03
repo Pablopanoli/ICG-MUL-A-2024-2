@@ -15,15 +15,21 @@ class Punto {
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const puntos = [
-    new Punto(50, 50),
-    new Punto(200, 50),
-    new Punto(200, 200),
-    new Punto(50, 200),
-    new Punto(100, 150) // Agregamos un punto adicional para crear un polígono cóncavo
-];
-
+let puntos = [];
 let mostrarCentroide = false;
+
+function generarPoligonoAleatorio() {
+    puntos = [];
+    const numPuntos = Math.floor(Math.random() * 5) + 3; // Generar entre 3 y 7 puntos
+
+    for (let i = 0; i < numPuntos; i++) {
+        const x = Math.random() * 400 + 50; // Coordenadas dentro del área del canvas
+        const y = Math.random() * 400 + 50;
+        puntos.push(new Punto(x, y));
+    }
+
+    dibujarPoligono(); // Dibujar el nuevo polígono
+}
 
 function dibujarPoligono() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -40,6 +46,10 @@ function dibujarPoligono() {
     // Determinar el tipo de polígono
     const tipo = esConvexa(puntos) ? "convexa" : "cóncava";
     document.getElementById('tipoPoligono').innerText = `La figura es ${tipo}.`;
+
+    if (mostrarCentroide) {
+        dibujarCentroide();
+    }
 }
 
 function calcularCentroide() {
@@ -54,21 +64,28 @@ function calcularCentroide() {
 function toggleCentroide() {
     mostrarCentroide = !mostrarCentroide;
     dibujarPoligono();
-    if (mostrarCentroide) {
-        const centroide = calcularCentroide();
-        ctx.beginPath();
-        ctx.arc(centroide.getX(), centroide.getY(), 5, 0, Math.PI * 2);
-        ctx.fillStyle = "red";
-        ctx.fill();
-        ctx.stroke();
+}
 
-        ctx.strokeStyle = "red";
-        puntos.forEach(p => {
-            ctx.moveTo(centroide.getX(), centroide.getY());
-            ctx.lineTo(p.getX(), p.getY());
-        });
+function dibujarCentroide() {
+    const centroide = calcularCentroide();
+    const cx = centroide.getX();
+    const cy = centroide.getY();
+
+    // Dibujar el centroide
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ctx.fillStyle = "red";
+    ctx.fill();
+    ctx.stroke();
+
+    // Dibujar líneas desde el centroide a cada punto
+    ctx.strokeStyle = "red";
+    puntos.forEach(p => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(p.getX(), p.getY());
         ctx.stroke();
-    }
+    });
 }
 
 function esConvexa(puntos) {
@@ -99,14 +116,5 @@ function esConvexa(puntos) {
     return true; // No se encontraron cambios de signo, el polígono es convexo
 }
 
-// Inicializar dibujo
-dibujarPoligono();
-
-
-function esConvexa(puntos) {
-    // Implementa aquí la lógica para determinar si el polígono es convexo o no
-    return true; // Cambia esto según la implementación
-}
-
-// Inicializa el polígono al cargar la página
-dibujarPoligono();
+// Inicializar con un polígono aleatorio
+generarPoligonoAleatorio();

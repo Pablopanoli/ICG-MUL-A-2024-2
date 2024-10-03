@@ -14,14 +14,21 @@ class Punto {
 }
 
 const svg = document.getElementById('svg');
-const puntos = [
-    new Punto(50, 50), 
-    new Punto(200, 50), 
-    new Punto(200, 200), 
-    new Punto(50, 200)
-];
-
+let puntos = [];
 let mostrarCentroide = false;
+
+function generarPoligonoAleatorio() {
+    puntos = [];
+    const numPuntos = Math.floor(Math.random() * 5) + 3; // Generar entre 3 y 7 puntos
+
+    for (let i = 0; i < numPuntos; i++) {
+        const x = Math.random() * 400 + 50; // Coordenadas dentro del área del SVG
+        const y = Math.random() * 400 + 50;
+        puntos.push(new Punto(x, y));
+    }
+
+    dibujarPoligono(); // Dibujar el nuevo polígono
+}
 
 function esConvexa(puntos) {
     let sign = 0;
@@ -113,4 +120,4 @@ function toggleCentroide() {
 }
 
 // Llamar a la función al cargar la página
-window.onload = dibujarPoligono;
+window.onload = generarPoligonoAleatorio; // Generar un polígono aleatorio al cargar
